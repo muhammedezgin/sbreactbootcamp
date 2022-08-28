@@ -2,6 +2,7 @@ package com.example.sbreactbootcamp.books.controllers;
 
 
 import com.example.sbreactbootcamp.books.model.Authors;
+import com.example.sbreactbootcamp.books.model.Books;
 import com.example.sbreactbootcamp.books.repositories.IAuthorsRepository;
 import com.example.sbreactbootcamp.response.R;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,9 +55,9 @@ public class AuthorsController {
    //Update
     @Operation(summary = "Update an existing authors")
    @PutMapping
-    public R<Authors> updateAuthors(@Parameter(description="Update an existing authors.") @RequestBody Authors authors){
+    public R<Authors> updateAuthors(@RequestBody Authors author){
        try{
-            authorsRepository.save(authors);
+            authorsRepository.save(author);
        }catch (Exception e){
            logger.error("Update an existing authors fails:" +e.getMessage());
         }
@@ -64,28 +65,33 @@ public class AuthorsController {
     }
 
 //delete
-    @Operation(summary = "Delete authors")
-   @DeleteMapping(value= "/{id}")
-    public R<Authors> deleteAuthor(@Parameter(description = "Delete an existing authors.") @PathVariable final int Id){
-        Authors author= null;
-        try{
-            authorsRepository.deleteById(author.getId());
-        }catch (Exception exception){
-            logger.error("Delete an existing author fails." + exception.getMessage());
-        }
-        return new R<Authors>().success().data(author);
-   }
-   //finbyıd
-    @Operation(summary = "Retrieve an existing authors")
-    @GetMapping("/{authors}")
-    public R<Authors> findAuthors(@Parameter(description = "A authors") @PathVariable int id) {
-        Authors author = null;
-        try {
-            author = authorsRepository.findById(author.getId()).orElse(new Authors());
-        } catch (Exception exception) {
-            logger.error("Retrieve an existing authors fails." + exception.getMessage());
-        }
-        return new R<Authors>().success().data(author);
+@DeleteMapping("/{id}")
+@ResponseBody
+public R<Authors> deleteAuthor(@PathVariable String id)
+{
+    try {
+        authorsRepository.deleteById(id);
+    }catch (Exception e)
+    {
+        logger.error(e.getMessage());
     }
+    return  new  R<Authors>().success();
+}
+
+   //finbyıd
+   @GetMapping("/{id}")
+   @ResponseBody
+   public R<Authors> findBookById(@PathVariable String id)
+   {
+       Authors authors =null;
+
+       try {
+           authors =authorsRepository.findById(id).orElse(new Authors());
+       }catch (Exception e)
+       {
+           logger.error(e.getMessage());
+       }
+       return  new  R<Authors>().success().data(authors);
+   }
 
 }

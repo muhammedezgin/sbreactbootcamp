@@ -25,7 +25,9 @@ public class GenresController {
     @Autowired
     IGenresRepository genresRepository;
 
+    @Operation(summary = "Find the generes list")
     @GetMapping("")
+    @ResponseBody
     public R<List<Genres>> findGenres(){
         List<Genres> genresList = null;
 
